@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "904670447535",
+    "firebase_url": "https://tubes-iot-affe1-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "tubes-iot-affe1",
+    "storage_bucket": "tubes-iot-affe1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:904670447535:android:7d3187f0ebeee470add15a",
+        "android_client_info": {
+          "package_name": "com.example.tubes_iot"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoSFYDuZ2Q7WYgCbSxDbwUiH8WbFOlrgM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
