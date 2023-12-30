@@ -1,91 +1,78 @@
 
-import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tubes_iot/firebase_options.dart';
-import 'package:tubes_iot/screen/homepage.dart';
-import 'package:tubes_iot/jarnik.dart';
-import 'package:tubes_iot/scan_qr.dart';
-import 'package:tubes_iot/screen/profile.dart';
+import 'package:tubes_iot/screen/login_screen.dart';
+import 'package:tubes_iot/screen/my_home.dart';
 import 'package:tubes_iot/style/color.dart';
+import 'package:tubes_iot/style/text.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MaterialApp(home: MyHome()));
+  runApp(const MaterialApp(home: MyApp()));
 }
 
-class MyHome extends StatefulWidget {
-  const MyHome({Key? key}) : super(key: key);
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
 
   @override
-  State<MyHome> createState() => _MyHomeState();
+  State<MyApp> createState() => _MyAppState();
 }
 
-class _MyHomeState extends State<MyHome> {
-  List<IconData> iconList = [
-    FontAwesomeIcons.house,
-    FontAwesomeIcons.book,
-    FontAwesomeIcons.inbox,
-    FontAwesomeIcons.solidUser
-  ];
+class _MyAppState extends State<MyApp> {
+  var auth = FirebaseAuth.instance;
+  var isLogin = false;
 
-  List<Widget> widgetList = [
-    const Homepage(),
-    const Homepage(),
-    const Jarnik(),
-    // FirebaseImageWidget(imagePath: "testing/KTM GIGIH.jpg"),
-    const ProfileImageUpload(),
-    const QRViewExample(),
-  ];
+  checkIfLogin() async {
+    auth.authStateChanges().listen((User? user) {
+      if (user != null && mounted) {
+        setState(() {
+          isLogin = true;
+        });
+      }
+    });
+  }
 
-  int _bottomNavIndex = 0;
+  @override
+  void initState() {
+    checkIfLogin();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    return MaterialApp(
+      home: isLogin ? MyHome() : SplashScreen(),
+    );
+  }
+}
+
+class SplashScreen extends StatelessWidget {
+  const SplashScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    Future.delayed(Duration(seconds: 2), () {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => LoginScreen()), // Ganti dengan layar utama
+      );
+    });
     return Scaffold(
-      backgroundColor: smoothGrey,
-      body: widgetList[_bottomNavIndex],
-      resizeToAvoidBottomInset: false,
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: brown,
-        onPressed: () {
-          setState(() {
-            _bottomNavIndex = 4;
-          });
-        },
-        child: const FaIcon(
-          FontAwesomeIcons.qrcode,
+      backgroundColor: brown,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 120,
+              child: Image.asset("assets/images/urban-fill-1152.png")),
+              Text("urban", style: text_18_700_white,)
+          ],
         ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: AnimatedBottomNavigationBar.builder(
-        itemCount: iconList.length,
-        tabBuilder: (index, isActive) {
-          return Icon(
-            iconList[index],
-            size: 18,
-            color: isActive ? Colors.white : Colors.white.withOpacity(0.4),
-          );
-        },
-        activeIndex: _bottomNavIndex,
-        gapLocation: GapLocation.center,
-        notchSmoothness: NotchSmoothness.verySmoothEdge,
-        leftCornerRadius: 15,
-        rightCornerRadius: 15,
-        height: 60,
-        backgroundGradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              lightBrown,
-              brown,
-            ]),
-        onTap: (index) => setState(() => _bottomNavIndex = index),
-        //other params
       ),
     );
   }
