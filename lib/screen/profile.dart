@@ -56,12 +56,13 @@
 //   }
 // }
 
-
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
+
+import 'package:tubes_iot/screen/login_screen.dart';
 
 class ProfileImageUpload extends StatefulWidget {
   const ProfileImageUpload({super.key});
@@ -88,9 +89,11 @@ class _ProfileImageUploadState extends State<ProfileImageUpload> {
 
   Future uploadImageToFirebase() async {
     if (_image != null) {
-      Reference ref = FirebaseStorage.instance.ref().child('profile_images/image1.jpg');
+      Reference ref =
+          FirebaseStorage.instance.ref().child('profile_images/image1.jpg');
       UploadTask uploadTask = ref.putFile(_image!);
-      TaskSnapshot storageTaskSnapshot = await uploadTask.whenComplete(() => null);
+      TaskSnapshot storageTaskSnapshot =
+          await uploadTask.whenComplete(() => null);
       String imageURL = await storageTaskSnapshot.ref.getDownloadURL();
 
       // Simpan imageURL ke database Firebase di sini
@@ -99,6 +102,13 @@ class _ProfileImageUploadState extends State<ProfileImageUpload> {
     } else {
       print('No image selected.');
     }
+  }
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  void signOut() async {
+    await _auth.signOut();
+    print('Berhasil keluar dari sesi');
   }
 
   @override
@@ -111,6 +121,18 @@ class _ProfileImageUploadState extends State<ProfileImageUpload> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            TextButton(
+                onPressed: () {
+                  setState(() {
+                    signOut();
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => LoginScreen(),
+                        ));
+                  });
+                },
+                child: Text("Keluar")),
             _image != null
                 ? Image.file(
                     _image!,
