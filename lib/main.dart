@@ -46,7 +46,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: isLogin ? MyHome() : SplashScreen(),
+      home: true ? MyHome() : SplashScreen(),
     );
   }
 }

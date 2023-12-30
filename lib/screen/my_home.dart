@@ -7,7 +7,6 @@ import 'package:tubes_iot/scan_qr.dart';
 import 'package:tubes_iot/screen/profile.dart';
 import 'package:tubes_iot/style/color.dart';
 
-
 class MyHome extends StatefulWidget {
   const MyHome({Key? key}) : super(key: key);
 
@@ -28,7 +27,9 @@ class _MyHomeState extends State<MyHome> {
     const Homepage(),
     const Jarnik(),
     // FirebaseImageWidget(imagePath: "testing/KTM GIGIH.jpg"),
-    const ProfileImageUpload(),
+    const Profile(),
+    // ProfileImageUpload(),
+    // FirebaseImageUpdater(),
     const QRViewExample(),
   ];
 
