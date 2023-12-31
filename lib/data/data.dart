@@ -17,6 +17,24 @@ class Kategori {
       {required this.icon, required this.kategori, required this.content});
 }
 
+class Setting {
+  final IconData icon;
+  final String title;
+  final Widget widget;
+  const Setting(
+      {required this.icon, required this.title, required this.widget});
+}
+
+const List <Setting> setting =  [
+  Setting(icon: FontAwesomeIcons.solidUser, title: "My Profile", widget: Center()),
+  Setting(icon: FontAwesomeIcons.gear, title: "Setting", widget: Center()),
+  Setting(icon: FontAwesomeIcons.bell, title: "Notification", widget: Center()),
+  Setting(icon: FontAwesomeIcons.circleHalfStroke, title: "Dark mode", widget: Center()),
+  Setting(icon: FontAwesomeIcons.circleQuestion, title: "Faq", widget: Center()),
+  Setting(icon: FontAwesomeIcons.circleInfo, title: "About", widget: Center()),
+  Setting(icon: FontAwesomeIcons.rightFromBracket, title: "Logout", widget: Center()),
+];
+
 const List<Kategori> kategori = [
   Kategori(icon: FontAwesomeIcons.lightbulb, kategori: "Smart Bulb", content: [
     Product(
@@ -50,6 +68,7 @@ const List<Kategori> kategori = [
         Product(
             image: "assets/images/cycle2.png",
             title: "Manual Cycle",
-            description: "Ingin yang lebih sehat? kami juga menyediakan sepeda manual"),
+            description:
+                "Ingin yang lebih sehat? kami juga menyediakan sepeda manual"),
       ]),
 ];

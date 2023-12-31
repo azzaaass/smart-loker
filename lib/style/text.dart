@@ -102,3 +102,12 @@ TextStyle text_12_300_1 = GoogleFonts.poppins(
     color: textH1.withOpacity(0.5),
   ),
 );
+
+TextStyle text_10_300 = GoogleFonts.poppins(
+  textStyle: TextStyle(
+    fontSize: 10.0,
+    fontWeight: FontWeight.w300,
+    height: 1,
+    color: textH1.withOpacity(0.3),
+  ),
+);

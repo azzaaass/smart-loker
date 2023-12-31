@@ -11,3 +11,4 @@ Color smoothGrey = const Color(0xFFedeef0);
 Color whiteBone = const Color.fromARGB(255, 250, 250, 250);
 
 Color textH1 = const Color(0xFF2d2d2b);
+Color textH2 = Color.fromARGB(255, 62, 62, 60);
