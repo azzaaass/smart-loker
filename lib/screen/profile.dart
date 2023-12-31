@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tubes_iot/data/data.dart';
@@ -41,7 +42,7 @@ class _ProfileState extends State<Profile> {
           child: Column(
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                 decoration: BoxDecoration(
                     color: whiteBone, borderRadius: BorderRadius.circular(10)),
                 child: Row(
@@ -82,7 +83,7 @@ class _ProfileState extends State<Profile> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                username.toString(),
+                                truncateText(username.toString(), 20),
                                 style: text_14_700,
                               ),
                               const SizedBox(
@@ -130,7 +131,7 @@ class _ProfileState extends State<Profile> {
                             if (index != 3 && index != 6) {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(
+                                CupertinoPageRoute(
                                   builder: (context) => setting[index].widget,
                                 ),
                               );
