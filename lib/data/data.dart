@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tubes_iot/screen/profile/my_profile.dart';
 
 class Product {
   final String image;
@@ -26,7 +27,7 @@ class Setting {
 }
 
 const List <Setting> setting =  [
-  Setting(icon: FontAwesomeIcons.solidUser, title: "My Profile", widget: Center()),
+  Setting(icon: FontAwesomeIcons.solidUser, title: "My Profile", widget: MyProfile()),
   Setting(icon: FontAwesomeIcons.gear, title: "Setting", widget: Center()),
   Setting(icon: FontAwesomeIcons.bell, title: "Notification", widget: Center()),
   Setting(icon: FontAwesomeIcons.circleHalfStroke, title: "Dark mode", widget: Center()),
