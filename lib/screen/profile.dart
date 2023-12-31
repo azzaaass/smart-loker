@@ -1,11 +1,13 @@
-import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tubes_iot/data/data.dart';
+import 'package:tubes_iot/screen/component/change_profile.dart';
+import 'package:tubes_iot/screen/component/image_profile.dart';
+import 'package:tubes_iot/screen/login_screen.dart';
 import 'package:tubes_iot/style/color.dart';
+import 'package:tubes_iot/style/text.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -16,172 +18,177 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   final uid = FirebaseAuth.instance.currentUser?.uid;
+  final email = FirebaseAuth.instance.currentUser?.email;
   final ref = FirebaseDatabase.instance.ref();
   final GlobalKey<ImageProfileState> childKey = GlobalKey<ImageProfileState>();
+  bool isDark = false;
+
+  String truncateText(String text, int maxLength) {
+    if (text.length <= maxLength) {
+      return text;
+    } else {
+      return '${text.substring(0, maxLength)}...';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: smoothGrey,
       body: SafeArea(
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Stack(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                decoration: BoxDecoration(
+                    color: whiteBone, borderRadius: BorderRadius.circular(10)),
+                child: Row(
                   children: [
-                    ImageProfile(
-                      key: childKey,
-                      path: "profile_images/$uid",
+                    Stack(
+                      clipBehavior: Clip.antiAlias,
+                      children: [
+                        ImageProfile(
+                          key: childKey,
+                          path: "profile_images/$uid",
+                        ),
+                        Positioned(
+                          right: -12,
+                          bottom: -12,
+                          child: ChangeProfile(
+                            childKey: childKey,
+                          ),
+                        ),
+                      ],
                     ),
-                    ChangeProfile(
-                      childKey: childKey,
+                    SizedBox(
+                      width: 20,
                     ),
+                    StreamBuilder(
+                      stream: ref.onValue,
+                      builder:
+                          (context, AsyncSnapshot<DatabaseEvent> snapshot) {
+                        if (snapshot.connectionState == ConnectionState) {
+                          return const Text("waiting...");
+                        } else if (snapshot.hasData) {
+                          final username = snapshot.data!.snapshot
+                              .child("usersData/$uid/username")
+                              .value;
+                          final phoneNumber = snapshot.data!.snapshot
+                              .child("usersData/$uid/phoneNumber")
+                              .value;
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                username.toString(),
+                                style: text_14_700,
+                              ),
+                              const SizedBox(
+                                height: 2,
+                              ),
+                              Text(
+                                truncateText(email.toString(), 20),
+                                style: text_12_500,
+                                overflow: TextOverflow.clip,
+                                maxLines: 1,
+                                softWrap: false,
+                              ),
+                              const SizedBox(
+                                height: 3,
+                              ),
+                              Text(
+                                phoneNumber.toString(),
+                                style: text_12_500,
+                              ),
+                            ],
+                          );
+                        }
+                        return const Text(" ");
+                      },
+                    )
                   ],
                 ),
-                StreamBuilder(
-                  stream: ref.onValue,
-                  builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
-                    if (snapshot.connectionState == ConnectionState) {
-                      return const Text("waiting...");
-                    } else if (snapshot.hasData) {
-                      final username = snapshot.data!.snapshot
-                          .child("usersData/$uid/username")
-                          .value;
-                      final phoneNumber = snapshot.data!.snapshot
-                          .child("usersData/$uid/phoneNumber")
-                          .value;
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(username.toString()),
-                          Text(phoneNumber.toString()),
-                        ],
-                      );
-                    }
-                    return const Text(" ");
-                  },
-                )
-              ],
-            ),
-          ],
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              Expanded(
+                flex: 8,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  decoration: BoxDecoration(
+                      color: whiteBone,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: ListView.builder(
+                    itemCount: setting.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                          onTap: () {
+                            final auth = FirebaseAuth.instance;
+                            if (index != 3 && index != 6) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => setting[index].widget,
+                                ),
+                              );
+                            } else if (index == 6) {
+                              auth.signOut();
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const LoginScreen(),
+                                ),
+                              );
+                            }
+                          },
+                          contentPadding:
+                              const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                          minLeadingWidth: 25,
+                          leading: FaIcon(
+                            setting[index].icon,
+                            size: 20,
+                            color: textH2,
+                          ),
+                          title: Text(
+                            setting[index].title,
+                            style: text_14_500,
+                          ),
+                          trailing: setting[index].title == "Dark mode"
+                              ? SizedBox(
+                                  width: 40,
+                                  height: 20,
+                                  child: Switch(
+                                    value: isDark,
+                                    activeColor: orange,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        isDark = !isDark;
+                                      });
+                                    },
+                                    materialTapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                  ),
+                                )
+                              : null);
+                    },
+                  ),
+                ),
+              ),
+              Expanded(
+                  flex: 1,
+                  child: Center(
+                    child: Text(
+                      "Tubes Pemmob © 2023",
+                      style: text_10_300,
+                    ),
+                  ))
+            ],
+          ),
         ),
       ),
-    );
-  }
-}
-
-class ImageProfile extends StatefulWidget {
-  final String path;
-  const ImageProfile({super.key, required this.path});
-
-  @override
-  State<ImageProfile> createState() => ImageProfileState();
-}
-
-class ImageProfileState extends State<ImageProfile> {
-  late Future<String> imageUrl;
-  Future<String> getImageUrl(String imagePath) async {
-    try {
-      final ref = FirebaseStorage.instance.ref().child(imagePath);
-      return await ref.getDownloadURL();
-    } catch (error) {
-      return "https://firebasestorage.googleapis.com/v0/b/tubes-iot-affe1.appspot.com/o/profile_images%2Fno-photo-available.png?alt=media&token=99c3e85d-64ff-4353-82a3-cb746f81e2c1";
-    }
-  }
-
-  @override
-  void initState() {
-    imageUrl = getImageUrl(widget.path);
-    super.initState();
-  }
-
-  void changeState() {
-    setState(() {
-      imageUrl = getImageUrl(widget.path);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<String>(
-      future: imageUrl,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircleAvatar(
-            radius: 40.0,
-            backgroundColor: brown,
-            child: const CircularProgressIndicator(color: Colors.white),
-          );
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        } else if (snapshot.hasData) {
-          return CircleAvatar(
-            radius: 40.0,
-            backgroundImage: NetworkImage(snapshot.data!),
-            backgroundColor: brown,
-          );
-        } else {
-          return const Center(child: Text('No image available'));
-        }
-      },
-    );
-  }
-}
-
-class ChangeProfile extends StatefulWidget {
-  final GlobalKey<ImageProfileState> childKey;
-  const ChangeProfile({super.key, required this.childKey});
-
-  @override
-  State<ChangeProfile> createState() => _ChangeProfileState();
-}
-
-class _ChangeProfileState extends State<ChangeProfile> {
-  File? _image;
-  final picker = ImagePicker();
-  User? user = FirebaseAuth.instance.currentUser;
-  String imageUrl = '';
-  final storage = FirebaseStorage.instance;
-
-  Future getImage() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
-      } else {
-        print('No image selected.');
-      }
-    });
-  }
-
-  Future uploadImageToFirebase() async {
-    String uid = user?.uid ?? '';
-    if (_image != null) {
-      Reference ref =
-          FirebaseStorage.instance.ref().child('profile_images/$uid');
-      UploadTask uploadTask = ref.putFile(_image!);
-      TaskSnapshot storageTaskSnapshot =
-          await uploadTask.whenComplete(() => null);
-      String imageURL = await storageTaskSnapshot.ref.getDownloadURL();
-
-      // Simpan imageURL ke database Firebase di sini
-      // Misalnya, Firestore atau Realtime Database
-      print('Image URL: $imageURL');
-    } else {
-      print('No image selected.');
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: () async {
-        await getImage();
-        await uploadImageToFirebase();
-        widget.childKey.currentState?.changeState();
-      },
-      icon: Icon(Icons.change_circle),
     );
   }
 }
