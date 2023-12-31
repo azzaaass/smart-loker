@@ -6,6 +6,8 @@ Color brown = const Color(0xFFa48269);
 Color lightOrange = const Color(0xFFefc189);
 Color orange = const Color(0xFFe9a66d);
 
+Color green = Color.fromARGB(255, 109, 233, 179);
+
 Color smoothGrey = const Color(0xFFedeef0);
 
 Color whiteBone = const Color.fromARGB(255, 250, 250, 250);
