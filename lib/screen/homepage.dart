@@ -3,6 +3,7 @@ import 'package:tubes_iot/screen/component/category_icon.dart';
 import 'package:tubes_iot/data/data.dart';
 import 'package:tubes_iot/screen/component/header.dart';
 import 'package:tubes_iot/style/color.dart';
+import 'package:tubes_iot/style/container_style.dart';
 import 'package:tubes_iot/style/text.dart';
 
 class Homepage extends StatefulWidget {
@@ -70,19 +71,7 @@ class _HomepageState extends State<Homepage> {
                           margin: const EdgeInsets.only(bottom: 20),
                           width: MediaQuery.of(context).size.width,
                           height: 100,
-                          decoration: BoxDecoration(
-                            color: whiteBone,
-                            borderRadius: BorderRadius.circular(10.0),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey
-                                    .withOpacity(0.1), // Warna bayangan
-                                spreadRadius: 0, // Lebar bayangan yang menyebar
-                                blurRadius: 5,
-                                offset: const Offset(3, 3),
-                              ),
-                            ],
-                          ),
+                          decoration: cardContainer,
                           child: Row(
                             children: [
                               SizedBox(

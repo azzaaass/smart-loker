@@ -2,6 +2,7 @@ import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.da
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tubes_iot/screen/history.dart';
 import 'package:tubes_iot/screen/homepage.dart';
 import 'package:tubes_iot/jarnik.dart';
 import 'package:tubes_iot/scan_qr.dart';
@@ -18,8 +19,8 @@ class MyHome extends StatefulWidget {
 class _MyHomeState extends State<MyHome> {
   List<IconData> iconList = [
     FontAwesomeIcons.house,
-    FontAwesomeIcons.book,
     FontAwesomeIcons.inbox,
+    FontAwesomeIcons.book,
     FontAwesomeIcons.solidUser
   ];
 
@@ -39,7 +40,7 @@ class _MyHomeState extends State<MyHome> {
         children: const <Widget>[
           Homepage(),
           Homepage(),
-          Jarnik(),
+          History(),
           // FirebaseImageWidget(imagePath: "testing/KTM GIGIH.jpg"),
           Profile(),
           // ProfileImageUpload(),
