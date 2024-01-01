@@ -74,7 +74,7 @@ class _HistoryState extends State<History> {
       });
       return completer.future.then<void>((_) {});
     } catch (error) {
-      print("error manuk");
+      print("error");
     }
     return completer.future.then<void>((_) {});
   }
@@ -100,9 +100,6 @@ class _HistoryState extends State<History> {
 
   @override
   Widget build(BuildContext context) {
-    setState(() {
-      
-    });
     return SafeArea(
       child: LiquidPullToRefresh(
         height: 50,
@@ -118,7 +115,7 @@ class _HistoryState extends State<History> {
                 children: [
                   (index == 0)
                       ? Container(
-                          padding: EdgeInsets.only(top: 20, bottom: 10),
+                          padding: const EdgeInsets.only(top: 20, bottom: 10),
                           child: Text(
                             "History",
                             style: text_18_700,
@@ -127,6 +124,7 @@ class _HistoryState extends State<History> {
                   Container(
                     margin: const EdgeInsets.only(
                         top: 10.0, left: 20.0, right: 20.0),
+                    padding: EdgeInsets.only(right: 20),
                     width: MediaQuery.of(context).size.width,
                     height: 80,
                     decoration: cardContainer,
@@ -170,7 +168,42 @@ class _HistoryState extends State<History> {
                               ),
                             ],
                           ),
-                        )
+                        ),
+                        InkWell(
+                            onTap: () async {
+                              String idx = dataList[index][0];
+                              print(dataList[index][0]);
+                              await ref
+                                  .child(
+                                      "loker/1234/historyLoker/$uid/device/$idx")
+                                  .remove();
+                              await ref
+                                  .child(
+                                      "loker/1234/historyLoker/$uid/status/$idx")
+                                  .remove();
+                              final snackBar = SnackBar(
+                                content: Text('Data terhapus'),
+                                behavior: SnackBarBehavior.floating,
+                                backgroundColor: lightBrown,
+                                action: SnackBarAction(
+                                  label: "refresh",
+                                  textColor: Colors.white,
+                                  onPressed: () => setState(() {
+                                    getDataFirebase();
+                                  }),
+                                ),
+                              );
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
+                              setState(() {
+                                getDataFirebase();
+                              });
+                            },
+                            child: FaIcon(
+                              FontAwesomeIcons.trashCan,
+                              size: 17,
+                              color: textH1,
+                            ))
                       ],
                     ),
                   ),
