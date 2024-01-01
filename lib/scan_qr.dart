@@ -1,11 +1,12 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
-import 'package:tubes_iot/screen/component/header.dart';
 import 'package:tubes_iot/style/color.dart';
 import 'package:tubes_iot/style/text.dart';
 
@@ -19,11 +20,11 @@ class QRViewExample extends StatefulWidget {
 class _QRViewExampleState extends State<QRViewExample> {
   Barcode? result;
   QRViewController? controller;
-  TextEditingController? controllerInput = TextEditingController();
+  TextEditingController? inputController = TextEditingController();
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  final ref = FirebaseDatabase.instance.ref();
+  final uid = FirebaseAuth.instance.currentUser?.uid;
 
-  // In order to get hot reload to work we need to pause the camera if the platform
-  // is android, or resume the camera if the platform is iOS.
   @override
   void reassemble() {
     super.reassemble();
@@ -41,7 +42,7 @@ class _QRViewExampleState extends State<QRViewExample> {
           padding: const EdgeInsets.only(top: 20, right: 20, left: 20),
           child: Column(
             children: <Widget>[
-              const Header(),
+              // const Header(),
               const SizedBox(
                 height: 20,
               ),
@@ -65,7 +66,6 @@ class _QRViewExampleState extends State<QRViewExample> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                  
                     Text(
                       'Atau Masukan kode',
                       style: text_18_700,
@@ -81,7 +81,7 @@ class _QRViewExampleState extends State<QRViewExample> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: TextField(
-                        controller: controllerInput,
+                        controller: inputController,
                         decoration: InputDecoration(
                             contentPadding: const EdgeInsets.only(left: 10),
                             hintText: "masukan kode disini",
@@ -94,28 +94,70 @@ class _QRViewExampleState extends State<QRViewExample> {
                     const SizedBox(
                       height: 10,
                     ),
-                    Container(
-                      padding: const EdgeInsets.all(15.0),
-                      width: 120,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20.0),
-                        gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              lightOrange,
-                              orange,
-                            ]),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "Connect Now !",
-                          style: GoogleFonts.poppins(
-                              textStyle: const TextStyle(
-                            fontSize: 11.0,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                          )),
+                    InkWell(
+                      onTap: () async {
+                        final snapshots = await ref
+                            .child('loker/${inputController?.text}/userLoker')
+                            .get();
+                        if (snapshots.value.toString() == "0") {
+                          await ref
+                              .child("loker/${inputController?.text}")
+                              .update({
+                            'userLoker': uid,
+                          });
+
+                          final snackBar = SnackBar(
+                            content: const Text('Koneksi berhasil'),
+                            behavior: SnackBarBehavior.floating,
+                            backgroundColor: orange,
+                            action: SnackBarAction(
+                              label: "Next",
+                              textColor: Colors.white,
+                              onPressed: () => Navigator.pop(
+                                context,
+                              ),
+                            ),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        } else {
+                          final snackBar = SnackBar(
+                            content: const Text('Device sudah digunakan'),
+                            behavior: SnackBarBehavior.floating,
+                            backgroundColor: brown,
+                            action: SnackBarAction(
+                              label: "Back",
+                              textColor: Colors.white,
+                              onPressed: () => Navigator.pop(
+                                context,
+                              ),
+                            ),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        }
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(15.0),
+                        width: 120,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20.0),
+                          gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                lightOrange,
+                                orange,
+                              ]),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "Connect Now !",
+                            style: GoogleFonts.poppins(
+                                textStyle: const TextStyle(
+                              fontSize: 11.0,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                            )),
+                          ),
                         ),
                       ),
                     ),
@@ -199,7 +241,7 @@ class _QRViewExampleState extends State<QRViewExample> {
     controller.scannedDataStream.listen((scanData) {
       setState(() {
         result = scanData;
-        controllerInput?.text = result!.code.toString();
+        inputController?.text = result!.code.toString();
         // controllerInput?.text = "hmmm";
         // print("test");
       });
