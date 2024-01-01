@@ -36,13 +36,11 @@ class _DeviceState extends State<Device> {
               final dataIsOpen =
                   snapshot.data!.snapshot.child("loker/1234/isOpen").value;
 
-              print("data is : $dataIsOpen");
               isOpen = dataIsOpen.toString() == 'true';
-              print("is open : $isOpen");
               if (userLoker.toString() == uid.toString()) {
                 return Container(
-                  margin: EdgeInsets.all(20),
-                  padding: EdgeInsets.all(10),
+                  margin: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(10),
                   height: 70,
                   decoration: cardContainer,
                   child: Row(
@@ -75,8 +73,8 @@ class _DeviceState extends State<Device> {
                           value: isOpen,
                           activeColor: orange,
                           onChanged: (value) async {
-                            // int unixTimestamp = DateTime.now().millisecondsSinceEpoch;
-                             int unixTimestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+                            int unixTimestamp =
+                                DateTime.now().millisecondsSinceEpoch ~/ 1000;
                             String status = (!isOpen) ? 'terbuka' : 'tertutup';
                             await ref
                                 .child("loker/1234")
@@ -110,7 +108,7 @@ class _DeviceState extends State<Device> {
                 );
               }
             }
-            return const CircularProgressIndicator();
+            return Center(child: const CircularProgressIndicator());
           },
         ),
       ),
