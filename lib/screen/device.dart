@@ -75,9 +75,18 @@ class _DeviceState extends State<Device> {
                           value: isOpen,
                           activeColor: orange,
                           onChanged: (value) async {
+                            // int unixTimestamp = DateTime.now().millisecondsSinceEpoch;
+                             int unixTimestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+                            String status = (!isOpen) ? 'terbuka' : 'tertutup';
                             await ref
                                 .child("loker/1234")
                                 .update({'isOpen': !isOpen});
+                            await ref
+                                .child("loker/1234/historyLoker/$uid/device")
+                                .update({'$unixTimestamp': 'mobile'});
+                            await ref
+                                .child("loker/1234/historyLoker/$uid/status")
+                                .update({'$unixTimestamp': status});
                           },
                           materialTapTargetSize:
                               MaterialTapTargetSize.shrinkWrap,
@@ -85,12 +94,10 @@ class _DeviceState extends State<Device> {
                       ),
                       InkWell(
                         onTap: () async {
-                          await ref
-                                .child("loker/1234")
-                                .update({
-                                  'isOpen': false,
-                                  'userLoker': 0,
-                                });
+                          await ref.child("loker/1234").update({
+                            'isOpen': false,
+                            'userLoker': '0',
+                          });
                         },
                         child: FaIcon(
                           FontAwesomeIcons.rightFromBracket,
