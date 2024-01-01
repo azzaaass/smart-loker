@@ -26,14 +26,24 @@ class Setting {
       {required this.icon, required this.title, required this.widget});
 }
 
-const List <Setting> setting =  [
-  Setting(icon: FontAwesomeIcons.solidUser, title: "My Profile", widget: MyProfile()),
+const List<Setting> setting = [
+  Setting(
+      icon: FontAwesomeIcons.solidUser,
+      title: "My Profile",
+      widget: MyProfile()),
   Setting(icon: FontAwesomeIcons.gear, title: "Setting", widget: Center()),
   Setting(icon: FontAwesomeIcons.bell, title: "Notification", widget: Center()),
-  Setting(icon: FontAwesomeIcons.circleHalfStroke, title: "Dark mode", widget: Center()),
-  Setting(icon: FontAwesomeIcons.circleQuestion, title: "Faq", widget: Center()),
+  Setting(
+      icon: FontAwesomeIcons.circleHalfStroke,
+      title: "Dark mode",
+      widget: Center()),
+  Setting(
+      icon: FontAwesomeIcons.circleQuestion, title: "Faq", widget: Center()),
   Setting(icon: FontAwesomeIcons.circleInfo, title: "About", widget: Center()),
-  Setting(icon: FontAwesomeIcons.rightFromBracket, title: "Logout", widget: Center()),
+  Setting(
+      icon: FontAwesomeIcons.rightFromBracket,
+      title: "Logout",
+      widget: Center()),
 ];
 
 const List<Kategori> kategori = [
