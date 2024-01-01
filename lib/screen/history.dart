@@ -74,7 +74,7 @@ class _HistoryState extends State<History> {
       });
       return completer.future.then<void>((_) {});
     } catch (error) {
-      print("error manuk");
+      print("error");
     }
     return completer.future.then<void>((_) {});
   }
@@ -100,9 +100,6 @@ class _HistoryState extends State<History> {
 
   @override
   Widget build(BuildContext context) {
-    setState(() {
-      
-    });
     return SafeArea(
       child: LiquidPullToRefresh(
         height: 50,
@@ -118,7 +115,7 @@ class _HistoryState extends State<History> {
                 children: [
                   (index == 0)
                       ? Container(
-                          padding: EdgeInsets.only(top: 20, bottom: 10),
+                          padding: const EdgeInsets.only(top: 20, bottom: 10),
                           child: Text(
                             "History",
                             style: text_18_700,
